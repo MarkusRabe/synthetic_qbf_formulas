@@ -1,0 +1,9 @@
+['measure_cadet.py', '-d', '../words_easy_train/']
+Namespace(directory='../words_easy_train/', file_type='*.qdimacs', repetitions=1, vsids=False)
+
+Avg conflicts: 18.765
+Var conflicts: 1813.0577750000002
+
+
+Avg decisions: 105.109
+Var decisions: 68997.51511899999

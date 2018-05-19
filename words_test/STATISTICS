@@ -1,0 +1,9 @@
+['measure_cadet.py', '-d', '../words_test/']
+Namespace(directory='../words_test/', file_type='*.qdimacs', repetitions=1, vsids=False)
+
+Avg conflicts: 68.331
+Var conflicts: 8930.537439
+
+
+Avg decisions: 396.96
+Var decisions: 298581.47839999996
