@@ -57,15 +57,6 @@ def eval_formula(filename, repetitions=1, decision_limit=0, VSIDS=False, fresh_s
             print(stderr)
             quit()
 
-        # print('  ' + str(p.returncode))
-        # print('  ' + str(stdout))
-        # print('  ' + str(stderr))
-        
-        # print('  Maxvar: ' + str(maxvar))
-        # print('  Conflicts: ' + str(extract_num_conflicts(stdout)))
-
-        if p.returncode == 30:
-            return 30, 0.0, 0.0
         returncodes.append(p.returncode)
         conflicts.append(extract_num_conflicts(stdout))
         num_decisions = extract_num_decisions(stdout)
@@ -79,5 +70,6 @@ def eval_formula(filename, repetitions=1, decision_limit=0, VSIDS=False, fresh_s
             quit()
 
     assert all(x == returncodes[0] for x in returncodes)
+
     return returncodes[0], np.mean(conflicts), np.mean(decisions)
 
