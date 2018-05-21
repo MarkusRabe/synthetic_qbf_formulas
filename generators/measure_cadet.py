@@ -8,7 +8,6 @@ import itertools
 import numpy as np
 from math import inf, log
 
-import cnf_tools
 from cadet_cmdline_utils import eval_formula
 
 def _parse_cmdline():
