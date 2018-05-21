@@ -1,9 +1,27 @@
-['measure_cadet.py', '-d', '../words_easy_train/']
-Namespace(directory='../words_easy_train/', file_type='*.qdimacs', repetitions=1, vsids=False)
+['measure_cadet.py', '-d', '../words_easy_train/', '-r', '1', '-l', '2000']
+Namespace(decision_limit='2000', directory='../words_easy_train/', file_type='*.qdimacs', repetitions=1)
 
-Avg conflicts: 18.765
-Var conflicts: 1813.0577750000002
+RANDOM:
+Avg decisions: 97.16449348044132
+Var decisions: 25359.99701411154
+Solved 997 of 1000 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 0, '<= 2**1': 4, '<= 2**2': 20, '<= 2**3': 63, '<= 2**4': 155, '<= 2**5': 176, '<= 2**6': 191, '<= 2**7': 188, '<= 2**8': 109, '<= 2**9': 65, '<= 2**10': 22, '<= 2**11': 4, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 3}
 
 
-Avg decisions: 105.109
-Var decisions: 68997.51511899999
+VSIDS:
+Avg decisions: 60.56156156156156
+Var decisions: 10636.144108072036
+Solved 999 of 1000 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 0, '<= 2**1': 1, '<= 2**2': 22, '<= 2**3': 146, '<= 2**4': 194, '<= 2**5': 167, '<= 2**6': 198, '<= 2**7': 165, '<= 2**8': 61, '<= 2**9': 36, '<= 2**10': 7, '<= 2**11': 2, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 1}
+
+
+CEGAR:
+Avg decisions: 23.138
+Var decisions: 532.964956
+Solved 1000 of 1000 in the decision limit 2000.
+Maximum: 250.0
+Exponential histogram: {'0': 0, '<= 2**1': 26, '<= 2**2': 70, '<= 2**3': 189, '<= 2**4': 246, '<= 2**5': 184, '<= 2**6': 236, '<= 2**7': 47, '<= 2**8': 2}
+
+

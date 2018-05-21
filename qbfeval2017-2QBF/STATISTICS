@@ -1,0 +1,18 @@
+['measure_cadet.py', '-d', '../qbfeval2017-2QBF/', '-r', '1', '-l', '2000']
+Namespace(decision_limit='2000', directory='../qbfeval2017-2QBF/', file_type='*.qdimacs', repetitions=1)
+
+RANDOM:
+Avg decisions: 236.89333333333335
+Var decisions: 223250.89528888886
+Solved 75 of 384 in the decision limit 2000.
+
+VSIDS:
+Avg decisions: 344.54615384615386
+Var decisions: 218319.58633136097
+Solved 130 of 384 in the decision limit 2000.
+
+CEGAR:
+Avg decisions: 478.4578947368421
+Var decisions: 303767.5955955679
+Solved 190 of 384 in the decision limit 2000.
+
