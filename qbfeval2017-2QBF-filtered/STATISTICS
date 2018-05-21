@@ -1,0 +1,27 @@
+['measure_cadet.py', '-d', '../qbfeval2017-2QBF-filtered/', '-l', '2000']
+Namespace(decision_limit='2000', directory='../qbfeval2017-2QBF-filtered/', file_type='*.qdimacs', repetitions=1)
+
+RANDOM:
+Avg decisions: 230.23880597014926
+Var decisions: 201416.6295388728
+Solved 67 of 364 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 3, '<= 2**1': 9, '<= 2**2': 8, '<= 2**3': 9, '<= 2**4': 5, '<= 2**5': 3, '<= 2**6': 3, '<= 2**7': 5, '<= 2**8': 6, '<= 2**9': 9, '<= 2**10': 1, '<= 2**11': 6, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 297}
+
+
+VSIDS:
+Avg decisions: 354.68
+Var decisions: 219289.62559999997
+Solved 125 of 364 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 3, '<= 2**1': 9, '<= 2**2': 6, '<= 2**3': 3, '<= 2**4': 2, '<= 2**5': 11, '<= 2**6': 14, '<= 2**7': 20, '<= 2**8': 12, '<= 2**9': 9, '<= 2**10': 23, '<= 2**11': 13, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 239}
+
+
+CEGAR:
+Avg decisions: 497.56043956043953
+Var decisions: 305135.1254679386
+Solved 182 of 364 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 3, '<= 2**1': 17, '<= 2**2': 21, '<= 2**3': 7, '<= 2**4': 3, '<= 2**5': 7, '<= 2**6': 17, '<= 2**7': 4, '<= 2**8': 10, '<= 2**9': 20, '<= 2**10': 35, '<= 2**11': 38, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 182}
+
+
