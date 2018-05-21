@@ -30,6 +30,7 @@ def _parse_cmdline():
                    help="File type to read from folder. (default '*.qdimacs')")
     return p.parse_args()
 
+
 # creates an exponential histogram from a list of natural numbers
 def _histogram(numbers):
     histogram = dict()
@@ -103,6 +104,7 @@ def main():
         vsids_cegar_decisions.append(avg_decisions)
 
     _log_result(args, {'RANDOM': random_decisions, 'VSIDS': vsids_decisions, 'CEGAR': vsids_cegar_decisions})
+
 
 if __name__ == "__main__":
     main()

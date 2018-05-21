@@ -122,7 +122,6 @@ def read_and_normalize(filename, max_clauses_per_variable):
     return normalizeQDIMACS(maxvar, clauses, universals, max_clauses_per_variable)
 
 
-
 def _parse_cmdline():
     print('')
     p = argparse.ArgumentParser()
@@ -173,6 +172,7 @@ def main():
             return_code_orig, _, _ = eval_formula(path_name, VSIDS=True, decision_limit=int(1000), CEGAR=False, fresh_seed=False)
             return_code_normalized, _, _ = eval_formula(normalized_path_name, VSIDS=True, decision_limit=int(1000), CEGAR=False, fresh_seed=False)
             assert return_code_orig == return_code_normalized or return_code_orig == 30 or return_code_normalized == 30
+
 
 if __name__ == "__main__":
     main()
