@@ -2,17 +2,26 @@
 Namespace(decision_limit='2000', directory='../qbfeval2017-2QBF/', file_type='*.qdimacs', repetitions=1)
 
 RANDOM:
-Avg decisions: 236.89333333333335
-Var decisions: 223250.89528888886
-Solved 75 of 384 in the decision limit 2000.
+Avg decisions: 267.0
+Var decisions: 271495.97402597405
+Solved 77 of 384 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 3, '<= 2**1': 5, '<= 2**2': 16, '<= 2**3': 5, '<= 2**4': 11, '<= 2**5': 7, '<= 2**6': 2, '<= 2**7': 5, '<= 2**8': 2, '<= 2**9': 9, '<= 2**10': 3, '<= 2**11': 9, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 307}
+
 
 VSIDS:
-Avg decisions: 344.54615384615386
-Var decisions: 218319.58633136097
+Avg decisions: 356.46923076923076
+Var decisions: 211779.110591716
 Solved 130 of 384 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 3, '<= 2**1': 8, '<= 2**2': 10, '<= 2**3': 0, '<= 2**4': 2, '<= 2**5': 13, '<= 2**6': 17, '<= 2**7': 15, '<= 2**8': 11, '<= 2**9': 14, '<= 2**10': 24, '<= 2**11': 13, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 254}
+
 
 CEGAR:
-Avg decisions: 478.4578947368421
-Var decisions: 303767.5955955679
-Solved 190 of 384 in the decision limit 2000.
+Avg decisions: 452.0054054054054
+Var decisions: 269860.1675383492
+Solved 185 of 384 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 3, '<= 2**1': 17, '<= 2**2': 28, '<= 2**3': 7, '<= 2**4': 3, '<= 2**5': 7, '<= 2**6': 16, '<= 2**7': 4, '<= 2**8': 11, '<= 2**9': 19, '<= 2**10': 36, '<= 2**11': 34, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 199}
+
 
