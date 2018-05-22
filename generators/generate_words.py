@@ -4,6 +4,7 @@ import os
 import sys
 import argparse
 import inspect
+import tempfile
 
 from random import randint, seed
 from aiger import bv, bv_utils
@@ -174,7 +175,7 @@ def main():
             continue
 
         f = tempfile.NamedTemporaryFile()
-        f.write(str(e))
+        f.write(str(e).encode())
         f.seek(0)
         (returncode, _, decisions) = eval_formula(f.name, args.repetitions, args.max_hardness * 10)
         f.close()
