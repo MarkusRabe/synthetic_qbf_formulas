@@ -1,0 +1,27 @@
+['measure_cadet.py', '-d', '../reduction-finding-test/', '-l', '2000']
+Namespace(decision_limit='2000', directory='../reduction-finding-test/', file_type='*.qdimacs', repetitions=1)
+
+RANDOM:
+Avg decisions: 331.6190476190476
+Var decisions: 297456.9977324263
+Solved 42 of 200 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 0, '<= 2**1': 3, '<= 2**2': 2, '<= 2**3': 9, '<= 2**4': 3, '<= 2**5': 4, '<= 2**6': 4, '<= 2**7': 2, '<= 2**8': 2, '<= 2**9': 5, '<= 2**10': 1, '<= 2**11': 7, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 158}
+
+
+VSIDS:
+Avg decisions: 265.26666666666665
+Var decisions: 223057.1288888889
+Solved 60 of 200 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 0, '<= 2**1': 4, '<= 2**2': 11, '<= 2**3': 7, '<= 2**4': 4, '<= 2**5': 5, '<= 2**6': 6, '<= 2**7': 7, '<= 2**8': 2, '<= 2**9': 2, '<= 2**10': 5, '<= 2**11': 7, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 140}
+
+
+CEGAR:
+Avg decisions: 205.72670807453417
+Var decisions: 169159.45326183405
+Solved 161 of 200 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 0, '<= 2**1': 10, '<= 2**2': 27, '<= 2**3': 18, '<= 2**4': 30, '<= 2**5': 14, '<= 2**6': 7, '<= 2**7': 10, '<= 2**8': 13, '<= 2**9': 10, '<= 2**10': 10, '<= 2**11': 12, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 0, '<= 2**15': 39}
+
+
