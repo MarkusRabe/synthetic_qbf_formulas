@@ -1,0 +1,11 @@
+['measure_cadet.py', '-d', '../reduction-finding-simple-train/', '-r', '10', '-l', '2000']
+Namespace(decision_limit='2000', directory='../reduction-finding-simple-train/', file_type='*.qdimacs', repetitions=10)
+
+RANDOM:
+Avg decisions: 304.7378223495702
+Var decisions: 220214.49209382516
+Solved 349 of 1785 in the decision limit 2000.
+Maximum: 20000.0
+Exponential histogram: {'0': 0, '<= 2**1': 6, '<= 2**2': 32, '<= 2**3': 48, '<= 2**4': 41, '<= 2**5': 31, '<= 2**6': 26, '<= 2**7': 19, '<= 2**8': 32, '<= 2**9': 40, '<= 2**10': 38, '<= 2**11': 36, '<= 2**12': 0, '<= 2**13': 2, '<= 2**14': 10, '<= 2**15': 1424}
+
+
