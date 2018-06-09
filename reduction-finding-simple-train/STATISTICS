@@ -2,10 +2,26 @@
 Namespace(decision_limit='2000', directory='../reduction-finding-simple-train/', file_type='*.qdimacs', repetitions=10)
 
 RANDOM:
-Avg decisions: 304.7378223495702
-Var decisions: 220214.49209382516
-Solved 349 of 1785 in the decision limit 2000.
-Maximum: 20000.0
-Exponential histogram: {'0': 0, '<= 2**1': 6, '<= 2**2': 32, '<= 2**3': 48, '<= 2**4': 41, '<= 2**5': 31, '<= 2**6': 26, '<= 2**7': 19, '<= 2**8': 32, '<= 2**9': 40, '<= 2**10': 38, '<= 2**11': 36, '<= 2**12': 0, '<= 2**13': 2, '<= 2**14': 10, '<= 2**15': 1424}
+Avg decisions: 165.99006622516555
+Var decisions: 74702.277053638
+Solved 302 of 309 in the decision limit 2000.
+Maximum: 18592.0
+Exponential histogram: {'0': 0, '<= 2**1': 6, '<= 2**2': 34, '<= 2**3': 42, '<= 2**4': 47, '<= 2**5': 29, '<= 2**6': 18, '<= 2**7': 26, '<= 2**8': 34, '<= 2**9': 32, '<= 2**10': 28, '<= 2**11': 6, '<= 2**12': 0, '<= 2**13': 2, '<= 2**14': 4, '<= 2**15': 1}
+
+
+VSIDS:
+Avg decisions: 40.81726384364821
+Var decisions: 19700.183382741463
+Solved 307 of 309 in the decision limit 2000.
+Maximum: 14742.0
+Exponential histogram: {'0': 0, '<= 2**1': 25, '<= 2**2': 89, '<= 2**3': 43, '<= 2**4': 52, '<= 2**5': 34, '<= 2**6': 31, '<= 2**7': 14, '<= 2**8': 8, '<= 2**9': 7, '<= 2**10': 2, '<= 2**11': 2, '<= 2**12': 0, '<= 2**13': 0, '<= 2**14': 2}
+
+
+CEGAR:
+Avg decisions: 4.181877022653722
+Var decisions: 13.123037253484986
+Solved 309 of 309 in the decision limit 2000.
+Maximum: 28.0
+Exponential histogram: {'0': 0, '<= 2**1': 48, '<= 2**2': 156, '<= 2**3': 70, '<= 2**4': 30, '<= 2**5': 5}
 
 
