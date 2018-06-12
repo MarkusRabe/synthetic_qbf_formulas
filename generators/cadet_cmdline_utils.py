@@ -26,9 +26,8 @@ def extract_num_decisions(s):
         return 0
 
 
-def eval_formula(filename, repetitions=1, decision_limit=0, VSIDS=False, fresh_seed=True, CEGAR=False):
+def eval_formula(filename, repetitions=1, decision_limit=None, soft_decision_limit=False, VSIDS=False, fresh_seed=True, CEGAR=False):
     assert isinstance(filename, str)
-    assert isinstance(decision_limit, int)
 
     returncodes = []
     conflicts = []
@@ -37,9 +36,11 @@ def eval_formula(filename, repetitions=1, decision_limit=0, VSIDS=False, fresh_s
     for _ in range(repetitions):
         tool = ['./../../cadet/dev/cadet','-v','1',
                 '--debugging',
-                '--cegar_soft_conflict_limit',
-                '-l', f'{decision_limit}',
                 '--sat_by_qbf']
+        if decision_limit != None:
+            tool += ['-l', f'{decision_limit}']
+        if soft_decision_limit:
+            tool += ['--cegar_soft_conflict_limit']
         if CEGAR:
             tool += ['--cegar']
         if not VSIDS:
@@ -55,21 +56,21 @@ def eval_formula(filename, repetitions=1, decision_limit=0, VSIDS=False, fresh_s
         if p.returncode not in [10, 20, 30]:
             print(stdout)
             print(stderr)
-            quit()
-
+            return None, None, None
+            
         returncodes.append(p.returncode)
         conflicts.append(extract_num_conflicts(stdout))
         num_decisions = extract_num_decisions(stdout)
         decisions.append(num_decisions)
 
-        if decision_limit != 0 and num_decisions > decision_limit:
+        if decision_limit != None and num_decisions > decision_limit:
             print('Error: decision limit was violated')
             print(formula)
             print(' '.join(tool))
             print(stdout)
             quit()
 
-    assert all(x == returncodes[0] for x in returncodes)
+    # assert all(x == returncodes[0] for x in returncodes)
 
     return returncodes[0], np.mean(conflicts), np.mean(decisions)
 

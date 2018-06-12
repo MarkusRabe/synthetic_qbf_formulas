@@ -15,7 +15,7 @@ def _parse_cmdline():
     p = argparse.ArgumentParser()
     p.add_argument('-r', '--repetitions', dest='repetitions', action='store',
                    metavar='N', nargs='?', default=1, type=int,
-                   help='Number of runs to build the average over')
+                   help='Number of runs to build the average over (default 1)')
     # p.add_argument('-v', '--vsids', dest='vsids', action='store',
     #                metavar='V', nargs='?', default=False, type=int,
     #                help='Evaluate VSIDS')
@@ -28,6 +28,9 @@ def _parse_cmdline():
     p.add_argument('-t', '--file_type', dest='file_type', action='store',
                    default='*.qdimacs',
                    help="File type to read from folder. (default '*.qdimacs')")
+    p.add_argument('-c', '--cactus', dest='file_type', action='store',
+                   default=False, type=bool,
+                   help="Create a cactus plot comparing the performance.")
     return p.parse_args()
 
 
@@ -89,19 +92,22 @@ def main():
     for file_name in file_names:
         print(f'Running {file_name}')
         return_code, _, avg_decisions = eval_formula(file_name, VSIDS=False, repetitions=args.repetitions, decision_limit=int(args.decision_limit))
-        if return_code == 30:
-            avg_decisions *= 10
-        random_decisions.append(avg_decisions)
+        if return_code is not None:
+            if return_code == 30:
+                avg_decisions *= 10
+            random_decisions.append(avg_decisions)
 
         return_code, _, avg_decisions = eval_formula(file_name, VSIDS=True, repetitions=args.repetitions, decision_limit=int(args.decision_limit))
-        if return_code == 30:
-            avg_decisions *= 10
-        vsids_decisions.append(avg_decisions)
+        if return_code is not None:
+            if return_code == 30:
+                avg_decisions *= 10
+            vsids_decisions.append(avg_decisions)
 
         return_code, _, avg_decisions = eval_formula(file_name, VSIDS=True, repetitions=args.repetitions, decision_limit=int(args.decision_limit), CEGAR=True)
-        if return_code == 30:
-            avg_decisions *= 10
-        vsids_cegar_decisions.append(avg_decisions)
+        if return_code is not None:
+            if return_code == 30:
+                avg_decisions *= 10
+            vsids_cegar_decisions.append(avg_decisions)
 
     _log_result(args, {'RANDOM': random_decisions, 'VSIDS': vsids_decisions, 'CEGAR': vsids_cegar_decisions})
 

@@ -16,7 +16,8 @@ arith_ops = [bv.BV.__add__, bv.BV.__sub__]
 bitwise_ops = [bv.BV.__and__, bv.BV.__or__, bv.BV.__xor__]
 shift_ops = [bv.BV.__rshift__, bv.BV.__lshift__]
 unary_ops = [bv.BV.reverse, bv.BV.__invert__, bv.BV.__abs__, bv.BV.__neg__]
-cmp_ops = [bv.BV.__eq__, bv.BV.__ne__, bv.BV.__lt__, bv.BV.__le__, bv.BV.__gt__, bv.BV.__ge__]
+cmp_ops = [bv.BV.__eq__, bv.BV.__ne__,
+           bv.BV.__lt__, bv.BV.__le__, bv.BV.__gt__, bv.BV.__ge__]
 
 variables = ['1 x1', '1 x2', '2 y1', '2 y2']
 
@@ -92,6 +93,8 @@ def random_circuit(size):
         e = bv_utils.simplify(e)
         if e is not None:
             return e
+        else: 
+            print('    Failed to generate expression; trying again')
 
 
 def parse_cmdline():
@@ -99,11 +102,12 @@ def parse_cmdline():
     p = argparse.ArgumentParser()
     p.add_argument('-s', '--seed', dest='seed', action='store',
                    nargs='?', default=None, type=int, metavar='S',
-                   help='Seed for the PNG. Uses fresh seed every run per default.')
+                   help='Seed for the PNG. Uses fresh seed every '
+                   'run per default.')
     p.add_argument('--max_hardness', dest='max_hardness', action='store',
-                   nargs='?', default=300, type=int, metavar='H',
+                   nargs='?', default=None, type=int, metavar='H',
                    help='The maximal average number of decisions required '
-                   'to solve the problem.')
+                   'to solve the problem (default None).')
     p.add_argument('--min_hardness', dest='min_hardness', action='store',
                    nargs='?', default=1, type=int, metavar='h',
                    help='The minimal average number of decisions required'
@@ -125,9 +129,12 @@ def parse_cmdline():
                    help='Word size (default 8).')
     p.add_argument('-e', '--expr_size', dest='expr_size',
                    action='store', nargs='?', default=8, type=int, metavar='W',
-                   help='Number of nodes in the syntax tree of the expressions (default 8).')
-    p.add_argument('-d', '--directory', dest='directory', action='store',
-                   default='../data/', help='Directory to write the formulas to.')
+                   help='Number of nodes in the syntax tree of the expressions'
+                   ' (default 8).')
+    p.add_argument('-d', '--directory', dest='directory',
+                   action='store',
+                   default='../data/',
+                   help='Directory to write the formulas to.')
     return p.parse_args()
 
 def log_parameters(args):
@@ -146,6 +153,7 @@ def main():
     log_parameters(args)
 
     if args.seed is not None:
+        print(f'Setting seed: {args.seed}')
         seed(args.seed)
 
     global word_length
@@ -163,13 +171,15 @@ def main():
         num_attempts += 1
 
         e = random_circuit(args.expr_size)
+        # print(e.aig.comments)
 
-        if len(e.aig.gates) == 0:
-            print('    Too few variables')
-            continue
-        if len(e.aig.gates) > args.maxvars:
-            print('    Too many variables')
-            continue
+        # if len(e.aig.gates) == 0:
+        #     print('    Too few variables')
+        #     continue
+        # if len(e.aig.gates) > args.maxvars:
+        #     print('    Too many variables')
+        #     continue
+
         if '1 x1' not in e.variables and '1 x2' not in e.variables:
             print('    No universals')
             continue
@@ -177,7 +187,9 @@ def main():
         f = tempfile.NamedTemporaryFile()
         f.write(str(e).encode())
         f.seek(0)
-        (returncode, _, decisions) = eval_formula(f.name, args.repetitions, args.max_hardness * 10)
+        decision_limit = 10*args.max_hardness if args.max_hardness != None else None
+        (returncode, _, decisions) = eval_formula(
+            f.name, args.repetitions, decision_limit=decision_limit)
         f.close()
         
         if returncode == 30:
@@ -195,14 +207,15 @@ def main():
             textfile.close()
             continue
 
-        if args.max_hardness >= decisions >= args.min_hardness:
+        if decisions >= args.min_hardness and (args.max_hardness is None or decisions <= args.max_hardness):
             if returncode == 10:
                 result_string = 'SAT'
                 num_sat += 1
             else:  # returncode == 20:
                 result_string = 'UNSAT'
                 num_unsat += 1
-            print(f'    Found a good formula! Decisions {decisions}; {result_string}')
+            print('    Found a good formula! Decisions'
+                  f' {decisions}; {result_string}')
 
             filedir = '{}/{}{}_{}.{}'.format(
                         args.directory,

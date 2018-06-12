@@ -8,68 +8,14 @@ import glob
 import numpy as np
 from subprocess import Popen, PIPE, STDOUT
 
-from cnf_tools import write_to_file
+from cnf_tools import write_to_file, clauses_to_occs, occs_to_clauses, qdimacs_to_clauselist
 from aux_utils import sign, is_number
 from cadet_cmdline_utils import eval_formula
 
 
-# Restricted to 2QBF
-def _qdimacs_to_clauselist(filename):
-    with open(filename, 'r') as f:
-        qdimacs = f.readlines()
-
-        clauses = []
-        univerals = []
-        maxvar = 0
-        for line in qdimacs:
-            lits = line.split()
-            if len(lits) == 0:
-                continue
-            if is_number(lits[0]):
-                lits = [int(l) for l in lits[0:-1]]
-                clauses.append(lits)
-            elif lits[0] == 'p': # header
-                assert(lits[1] == 'cnf')
-                assert(is_number(lits[2]))
-                maxvar = int(lits[2])
-                assert(maxvar != 0)
-            elif lits[0] == 'a':
-                assert len(univerals) == 0  # there can only be one set of universals
-                univerals = [int(x) for x in lits[1:-1]]
-            elif lits[0] == 'e':  # nothing to be done
-                continue
-            else: # must be comment in dimacs format
-                 if lits[0] != 'c':
-                     print ('Could not read line ' + str(lits))
-                     quit() 
-        assert (maxvar != 0)
-        return maxvar, clauses, univerals
-
-
-def _clauses_to_occs(clauses): 
-    occs = {}
-    for lits in clauses:
-        for l in lits:
-            if abs(l) not in occs:
-                occs[abs(l)] = []
-            occs[abs(l)] += [lits] # storing reference to lits so we can manipulate them consistently
-    return occs
-
-
-def _occs_to_clauses(occs):
-    clause_str_set = set()
-    clauses = []
-    for v in occs.keys():
-        for c in occs[v]:
-            c_string = ' '.join(map(str,c))
-            if c_string not in clause_str_set: # because string is hashable
-                clause_str_set.add(c_string)
-                clauses.append(c)
-    return clauses
-
 
 def normalizeQDIMACS(maxvar, clauses, universals, max_clauses_per_variable):
-    occs = _clauses_to_occs(clauses)
+    occs = clauses_to_occs(clauses)
 
     # Split variables when they occur in more than 8 clauses
     itervars = set(occs.keys())
@@ -114,11 +60,11 @@ def normalizeQDIMACS(maxvar, clauses, universals, max_clauses_per_variable):
         #   > MAX_CLAUSES_PER_VARIABLE for v in occs.keys()] ))))
 
     print(f'  added {added_vars} variables')
-    return maxvar, _occs_to_clauses(occs), universals
+    return maxvar, occs_to_clauses(occs), universals
 
 
 def read_and_normalize(filename, max_clauses_per_variable):
-    maxvar, clauses, universals = _qdimacs_to_clauselist(filename)
+    maxvar, clauses, universals = qdimacs_to_clauselist(filename)
     return normalizeQDIMACS(maxvar, clauses, universals, max_clauses_per_variable)
 
 
