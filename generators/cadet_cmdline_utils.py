@@ -53,6 +53,9 @@ def eval_formula(filename, repetitions=1, decision_limit=None, soft_decision_lim
         p = Popen(tool, stdout=PIPE, stdin=PIPE)
         stdout, stderr = p.communicate()
 
+        if p.returncode is 30:
+            return 30, None, None
+
         if p.returncode not in [10, 20, 30]:
             print(stdout)
             print(stderr)
@@ -70,7 +73,8 @@ def eval_formula(filename, repetitions=1, decision_limit=None, soft_decision_lim
             print(stdout)
             quit()
 
-    # assert all(x == returncodes[0] for x in returncodes)
+    assert 30 not in returncodes
+    assert all(x == returncodes[0] for x in returncodes)
 
     return returncodes[0], np.mean(conflicts), np.mean(decisions)
 

@@ -28,10 +28,20 @@ def _parse_cmdline():
     p.add_argument('-t', '--file_type', dest='file_type', action='store',
                    default='*.qdimacs',
                    help="File type to read from folder. (default '*.qdimacs')")
-    p.add_argument('-c', '--cactus', dest='file_type', action='store',
+    p.add_argument('-c', '--cactus', dest='cactus', action='store',
                    default=False, type=bool,
                    help="Create a cactus plot comparing the performance.")
     return p.parse_args()
+
+
+
+def _write_cactus_data(file_name, data_name_x, data_name_y, data):
+    with open(file_name, "w") as textfile:
+        textfile.write(f'{data_name_x}\t{data_name_y}\n')
+        data = data.copy()
+        data.sort()
+        for idx, x in enumerate(data):
+            textfile.write(f'{idx + 1}\t{x}\n')
 
 
 # creates an exponential histogram from a list of natural numbers
@@ -66,18 +76,18 @@ def _stats(args, name, numbers):
 
 
 def _log_result(args, runs):
-    filename = os.path.join(args.directory, 'STATISTICS')
-    textfile = open(filename, "w")
-    textfile.write(str(sys.argv))
-    textfile.write('\n')
-    textfile.write(str(args) + '\n\n')
+    file_name = os.path.join(args.directory, 'STATISTICS')
+    with open(file_name, "w") as textfile:
+        textfile.write(str(sys.argv))
+        textfile.write('\n')
+        textfile.write(str(args) + '\n\n')
 
-    for name, numbers in runs.items():
-        stats = _stats(args, name, numbers)
-        print(stats)
-        print('\n')
-        textfile.write(stats)
-        textfile.write('\n\n')
+        for name, numbers in runs.items():
+            stats = _stats(args, name, numbers)
+            print(stats)
+            print('\n')
+            textfile.write(stats)
+            textfile.write('\n\n')
     
 
 def main():
@@ -92,25 +102,27 @@ def main():
     for file_name in file_names:
         print(f'Running {file_name}')
         return_code, _, avg_decisions = eval_formula(file_name, VSIDS=False, repetitions=args.repetitions, decision_limit=int(args.decision_limit))
-        if return_code is not None:
-            if return_code == 30:
-                avg_decisions *= 10
+        if avg_decisions is not None:
             random_decisions.append(avg_decisions)
 
         return_code, _, avg_decisions = eval_formula(file_name, VSIDS=True, repetitions=args.repetitions, decision_limit=int(args.decision_limit))
-        if return_code is not None:
-            if return_code == 30:
-                avg_decisions *= 10
+        if avg_decisions is not None:
             vsids_decisions.append(avg_decisions)
 
         return_code, _, avg_decisions = eval_formula(file_name, VSIDS=True, repetitions=args.repetitions, decision_limit=int(args.decision_limit), CEGAR=True)
-        if return_code is not None:
-            if return_code == 30:
-                avg_decisions *= 10
+        if avg_decisions is not None:
             vsids_cegar_decisions.append(avg_decisions)
 
     _log_result(args, {'RANDOM': random_decisions, 'VSIDS': vsids_decisions, 'CEGAR': vsids_cegar_decisions})
-
+    
+    if (args.cactus):
+        print(f'\nWriting cactus plot data to {args.directory}')
+        file_name = os.path.join(args.directory, 'Random.dat')
+        _write_cactus_data(file_name, 'number_of_formulas', 'decisions', random_decisions)
+        file_name = os.path.join(args.directory, 'VSIDS.dat')
+        _write_cactus_data(file_name, 'number_of_formulas', 'decisions', vsids_decisions)
+        file_name = os.path.join(args.directory, 'CEGAR.dat')
+        _write_cactus_data(file_name, 'number_of_formulas', 'decisions', vsids_cegar_decisions)
 
 if __name__ == "__main__":
     main()
