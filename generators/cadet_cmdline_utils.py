@@ -26,7 +26,41 @@ def extract_num_decisions(s):
         return 0
 
 
-def eval_formula(filename, repetitions=1, decision_limit=None, soft_decision_limit=False, VSIDS=False, fresh_seed=True, CEGAR=False):
+def _ignore_output(p):
+    # p.wait()
+    # print(p.poll())
+    # print('Poll end')
+    for line in p.stdout:
+        # print(line[:-1])
+        newfile = line == 'Enter new filename:\n'
+        if line.startswith('s ') or newfile:
+            return newfile
+
+    # while True:
+    #     out = p.stdout.readline()
+    #     print(out)
+    #     if not out:
+    #         break
+
+def _rl_interaction(tool, filename):
+    p = Popen(tool, stdout=PIPE, stdin=PIPE, universal_newlines=True, bufsize=1)
+
+    _ignore_output(p)
+    # print('writing ' + f'{filename}')
+    p.stdin.write(f'{filename}\n')
+    # print('Written!')
+    i = 0
+    while not _ignore_output(p):
+        i += 1
+        p.stdin.write('?\n')
+    p.terminate()
+    print(f'Terminated after {i} steps')
+    return 30, None, i
+
+
+def eval_formula(filename, repetitions=1, decision_limit=None, 
+                 soft_decision_limit=False, VSIDS=False, fresh_seed=True, 
+                 CEGAR=False, RL=False):
     assert isinstance(filename, str)
 
     returncodes = []
@@ -47,14 +81,18 @@ def eval_formula(filename, repetitions=1, decision_limit=None, soft_decision_lim
             tool += ['--random_decisions']
         if fresh_seed:
             tool += ['--fresh_seed']
+        if RL:
+            tool += ['--rl']
+        else:
+            tool += [filename]
 
-        tool += [filename]
+        if RL:
+            return _rl_interaction(tool, filename)
 
         p = Popen(tool, stdout=PIPE, stdin=PIPE)
         stdout, stderr = p.communicate()
-
         if p.returncode is 30:
-            return 30, None, None
+            return 30, None, decision_limit
 
         if p.returncode not in [10, 20, 30]:
             print(stdout)
