@@ -112,9 +112,9 @@ def parse_cmdline():
                    nargs='?', default=1, type=int, metavar='h',
                    help='The minimal average number of decisions required'
                    'to solve the problem.')
-    p.add_argument('--maxvars', dest='maxvars', action='store',
-                   nargs='?', default=50, type=int, metavar='V',
-                   help='The maximal number of variables (default 50).')
+    # p.add_argument('--maxvars', dest='maxvars', action='store',
+    #                nargs='?', default=50, type=int, metavar='V',
+    #                help='The maximal number of variables (default 50).')
     p.add_argument('-n', '--number', dest='num_generated', action='store',
                    nargs='?', default=1, type=int, metavar='N',
                    help='Number of files to be generated.')
@@ -148,6 +148,10 @@ def log_parameters(args):
 def main():
     args = parse_cmdline()
 
+    if args.repetitions != 1:  # TODO
+        print('Repetitions != 1 not implemented')
+        quit()
+
     if not os.path.exists(args.directory):
         os.makedirs(args.directory)
     log_parameters(args)
@@ -162,6 +166,7 @@ def main():
     file_extension = 'qaiger'
     num_sat = 0
     num_unsat = 0
+    num_unknown = 0
     num_generated = 0
     num_attempts = 0
 
@@ -187,12 +192,17 @@ def main():
         f = tempfile.NamedTemporaryFile()
         f.write(str(e).encode())
         f.seek(0)
-        decision_limit = 10*args.max_hardness if args.max_hardness != None else None
-        (returncode, _, decisions) = eval_formula(
-            f.name, args.repetitions, decision_limit=decision_limit)
+
+        if args.max_hardness != None:
+            decision_limit = 10*args.max_hardness
+        else:
+            decision_limit = max(args.min_hardness, 100)
+
+        (returncode, _, decisions) = eval_formula(f.name, decision_limit=decision_limit)
+
         f.close()
         
-        if returncode == 30:
+        if args.max_hardness != None and returncode == 30:
             print('    Hit the decision limit')
             continue
         if returncode not in [10, 20, 30]:
@@ -207,22 +217,23 @@ def main():
             textfile.close()
             continue
 
-        if decisions >= args.min_hardness and (args.max_hardness is None or decisions <= args.max_hardness):
+        if decisions >= args.min_hardness and\
+                (args.max_hardness is None or decisions <= args.max_hardness):
+
             if returncode == 10:
                 result_string = 'SAT'
                 num_sat += 1
-            else:  # returncode == 20:
+            elif returncode == 20:
                 result_string = 'UNSAT'
                 num_unsat += 1
+            else:
+                result_string = 'UNKNOWN'
+                num_unknown += 1
+
             print('    Found a good formula! Decisions'
                   f' {decisions}; {result_string}')
 
-            filedir = '{}/{}{}_{}.{}'.format(
-                        args.directory,
-                        args.file_prefix,
-                        str(num_generated),
-                        result_string,
-                        file_extension)
+            filedir = f'{args.directory}/{args.file_prefix}{num_generated}.{file_extension}'
 
             textfile = open(filedir, "w")
             textfile.write(str(e))
@@ -232,9 +243,7 @@ def main():
         else:
             print(f'    Not the right number of decisions: {decisions}')
 
-    print('Generated {} SAT and {} UNSAT formulas'.format(
-            str(num_sat),
-            str(num_unsat)))
+    print(f'Generated {num_sat} SAT; {num_unsat} UNSAT; {num_unknown} UNKNOWN')
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ import argparse
 import glob
 import itertools
 
-from aiger import parser
+from aiger import parser, aig
 import cnf_tools
 from cadet_cmdline_utils import eval_formula
 
@@ -71,7 +71,7 @@ def _quantifiers(aag):
 
 
 def _gate_to_clauses(gate):
-    assert isinstance(gate, list)
+    # assert isinstance(gate, list)
     assert len(gate) == 3
     return [[ - aiger2dimacs_lit(gate[1]), - aiger2dimacs_lit(gate[2]), aiger2dimacs_lit(gate[0])], 
             [   aiger2dimacs_lit(gate[1]), - aiger2dimacs_lit(gate[0])], 
@@ -113,16 +113,13 @@ def main():
     
     for file_name in file_names:
         print(f'Transforming {file_name}')
-        aag = parser.load(file_name)
-        aag2qdimacs(aag, file_name + '.qdimacs')
+        circuit = parser.load(file_name, to_aig=False)
+        aag2qdimacs(circuit, file_name + '.qdimacs')
 
-        res1 = eval_formula(file_name, VSIDS=True, fresh_seed=False)[0]
-        res2 = eval_formula(file_name + ".qdimacs", VSIDS=True, fresh_seed=False)[0]
+        # res1 = eval_formula(file_name, VSIDS=True, fresh_seed=False)[0]
+        # res2 = eval_formula(file_name + ".qdimacs", VSIDS=True, fresh_seed=False)[0]
         # print(file_name + f': {res1}, {res2}')
-        assert res1 == res2
-        # assert eval_formula(file_name)[0] == eval_formula(file_name + ".qdimacs")[0]
-        # print(eval_formula(file_name))
-        # print(eval_formula(file_name + ".qdimacs"))
+        # assert res1 == res2
         
 
 
