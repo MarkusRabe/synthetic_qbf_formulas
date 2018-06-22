@@ -5,6 +5,7 @@ import sys
 import argparse
 import inspect
 import tempfile
+import git
 
 from random import randint, seed
 from aiger import bv, bv_utils
@@ -150,6 +151,9 @@ def log_parameters(args):
     textfile.write(str(sys.argv))
     textfile.write('\n')
     textfile.write(str(args))
+    textfile.write('\n')
+    repo = git.Repo(search_parent_directories=True)
+    textfile.write(f'Git hash: {repo.head.object.hexsha}\n')
     textfile.close()
 
 def main():

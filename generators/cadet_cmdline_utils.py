@@ -42,8 +42,8 @@ def _ignore_output(p):
     #     if not out:
     #         break
 
-def _rl_interaction(tool, filename):
-    p = Popen(tool, stdout=PIPE, stdin=PIPE, universal_newlines=True, bufsize=1)
+def _rl_interaction(cmd, filename):
+    p = Popen(cmd, stdout=PIPE, stdin=PIPE, universal_newlines=True, bufsize=1)
 
     _ignore_output(p)
     # print('writing ' + f'{filename}')
@@ -58,36 +58,48 @@ def _rl_interaction(tool, filename):
     return 30, None, i
 
 
-def eval_formula(filename, decision_limit=None, 
-                 soft_decision_limit=False, VSIDS=False, fresh_seed=True, 
-                 CEGAR=False, RL=False):
+def eval_formula(filename,
+                 decision_limit=None, 
+                 soft_decision_limit=False,
+                 VSIDS=False,
+                 fresh_seed=False, 
+                 CEGAR=False,
+                 RL=False,
+                 debugging=True,
+                 projection=False
+                 ):
     assert isinstance(filename, str)
 
-    tool = ['./../../cadet/dev/cadet','-v','1',
-            '--debugging',
+    cmd = ['./../../cadet/dev/cadet','-v','1',
             '--sat_by_qbf']
+    if debugging:
+        cmd += ['--debugging']
     if decision_limit != None:
-        tool += ['-l', f'{decision_limit}']
+        cmd += ['-l', f'{decision_limit}']
     if soft_decision_limit:
-        tool += ['--cegar_soft_conflict_limit']
+        cmd += ['--cegar_soft_conflict_limit']
     if CEGAR:
-        tool += ['--cegar']
+        cmd += ['--cegar']
     if not VSIDS:
-        tool += ['--random_decisions']
+        cmd += ['--random_decisions']
     if fresh_seed:
-        tool += ['--fresh_seed']
+        cmd += ['--fresh_seed']
+    if projection:
+        cmd += ['-e', 'elim.aag']
+
     if RL:
-        tool += ['--rl']
+        cmd += ['--rl']
     else:
-        tool += [filename]
+        cmd += [filename]
 
     if RL:
-        return _rl_interaction(tool, filename)
+        return _rl_interaction(cmd, filename)
 
-    p = Popen(tool, stdout=PIPE, stdin=PIPE)
+    p = Popen(cmd, stdout=PIPE, stdin=PIPE)
     stdout, stderr = p.communicate()
 
     if p.returncode not in [10, 20, 30]:
+        print(f'Command: {cmd}')
         print(stdout)
         print(stderr)
         return None, None, None
@@ -102,7 +114,7 @@ def eval_formula(filename, decision_limit=None,
     if decision_limit != None and num_decisions > decision_limit:
         print('Error: decision limit was violated')
         print(formula)
-        print(' '.join(tool))
+        print(' '.join(cmd))
         print(stdout)
         quit()
 
