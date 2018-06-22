@@ -114,7 +114,7 @@ def _measure_formula(file_name, repetitions, VSIDS=False, decision_limit=None, C
     timeouts = 0
     decisions_list = []
     for i in range(repetitions):
-        return_code, _, decisions = eval_formula(file_name, VSIDS=VSIDS, decision_limit=decision_limit, CEGAR=CEGAR)
+        return_code, _, decisions = eval_formula(file_name, VSIDS=VSIDS, decision_limit=decision_limit, CEGAR=CEGAR, fresh_seed=False)
         
         assert decisions is not None
         assert return_code != 30 or decisions == decision_limit

@@ -19,10 +19,12 @@ unary_ops = [bv.BV.reverse, bv.BV.__invert__, bv.BV.__abs__, bv.BV.__neg__]
 cmp_ops = [bv.BV.__eq__, bv.BV.__ne__,
            bv.BV.__lt__, bv.BV.__le__, bv.BV.__gt__, bv.BV.__ge__]
 
-variables = ['1 x1', '1 x2', '2 y1', '2 y2']
+variables = None
 
 def variable():
-    v = bv.BV(word_length, variables[randint(0, len(variables) - 1)])
+    # variables[randint(0, len(variables) - 1)]
+    global variables
+    v = bv.BV(word_length, variables.pop())
     return v
 
 def constant_expr():
@@ -79,6 +81,9 @@ def bitwise_expr(size):
     return op(left, right)
 
 def random_bool_expr(size):
+    global variables
+    variables = ['2 y1', '1 x1', '2 y2', '1 x2']
+
     assert size > 2
     op = cmp_ops[randint(0, len(cmp_ops)-1)]
     split = randint(1, size - 2)  # at least one operation on either side
@@ -135,6 +140,8 @@ def parse_cmdline():
                    action='store',
                    default='../data/',
                    help='Directory to write the formulas to.')
+    p.add_argument('--only_unsat', dest='only_unsat', action='store_true',
+                   help='Only accept unsat formulas.')
     return p.parse_args()
 
 def log_parameters(args):
@@ -198,9 +205,15 @@ def main():
         else:
             decision_limit = max(args.min_hardness, 100)
 
-        (returncode, _, decisions) = eval_formula(f.name, decision_limit=decision_limit)
+        (returncode, _, decisions) = eval_formula(f.name,
+                                                  decision_limit=decision_limit,
+                                                  VSIDS=args.max_hardness==None,
+                                                  CEGAR=args.max_hardness==None)
 
-        f.close()
+        f.close()  # this deletes the temporary file
+
+        if args.only_unsat and returncode != 20:
+            continue
         
         if args.max_hardness != None and returncode == 30:
             print('    Hit the decision limit')
