@@ -1,0 +1,21 @@
+aag 5 3 0 1 2
+2
+4
+8
+11
+6 2 5
+10 7 9
+i0 1 x1[7]
+i1 2 y2[0]
+i2 2 y2[1]
+o0 bv[0]
+c
+simplified
+  >=
+    or
+      reverse
+        2 y2
+      invert
+        1 x1
+    << 6
+      2 y2

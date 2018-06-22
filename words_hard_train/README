@@ -1,0 +1,2 @@
+['./generate_words.py', '-d', '../words_hard_train', '--maxvars', '100', '-n', '10000', '-s', '0']
+Namespace(directory='../words_hard_train', expr_size=8, file_prefix='', max_hardness=None, maxvars=100, min_hardness=1, num_generated=10000, repetitions=1, seed=0, word_size=8)

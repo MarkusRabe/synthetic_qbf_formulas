@@ -1,0 +1,20 @@
+aag 5 2 0 1 3
+2
+4
+11
+6 2 5
+8 3 4
+10 7 9
+i0 1 x2[0]
+i1 2 y1[0]
+o0 bv[0]
+c
+simplified
+  >=
+    and
+      abs
+        1
+      subtract
+        1 x2
+        2 y1
+    1
