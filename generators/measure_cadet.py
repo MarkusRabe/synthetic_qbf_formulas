@@ -82,7 +82,8 @@ class StatisticsAccumulator(object):
                  CEGAR=False,
                  RL=False,
                  debugging=False,
-                 projection=False):
+                 projection=False,
+                 cadet_path=None):
 
         self.name = name
         self.repetitions = repetitions
@@ -96,7 +97,8 @@ class StatisticsAccumulator(object):
         self.RL = RL
         self.debugging = debugging
         self.projection = projection
-        
+        self.cadet_path = cadet_path
+
         # Accumulate the number of decisions
         self.num_decision_list = []
         self.num_files = 0
@@ -115,10 +117,11 @@ class StatisticsAccumulator(object):
                                             debugging=self.debugging,
                                             RL=self.RL,
                                             soft_decision_limit=self.soft_decision_limit,
-                                            projection=self.projection)
+                                            projection=self.projection,
+                                            cadet_path=self.cadet_path)
 
             assert decisions is not None
-            assert rc != 30 or decisions == decision_limit
+            assert rc != 30 or decisions == self.decision_limit
 
             if rc == 30:
                 timeouts += 1
@@ -132,7 +135,7 @@ class StatisticsAccumulator(object):
         self.num_decision_list.append(avg)
 
     def write_cactus_data(self, directory):
-        file_name = os.path.join(args.directory, f'{self.name}.dat')
+        file_name = os.path.join(directory, f'{self.name}.dat')
         data_name_x = 'number_of_formulas'
         data_name_y = 'decisions'
         with open(file_name, "w") as textfile:
@@ -199,6 +202,12 @@ def main():
                                                   VSIDS=True, CEGAR=False,
                                                   decision_limit=args.decision_limit,
                                                   projection=True))
+        accumulators.append(StatisticsAccumulator("Old projection", args.repetitions,
+                                                  VSIDS=True, CEGAR=False,
+                                                  decision_limit=args.decision_limit,
+                                                  projection=True,
+                                                  cadet_path='./../../cadet/dev_pre_projection_update/cadet'))
+
 
     if len(accumulators) == 0:
         print('No configuration to measure specified. Type "./measure_cadet.py -h" for help.')

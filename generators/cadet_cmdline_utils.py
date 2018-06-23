@@ -66,12 +66,15 @@ def eval_formula(filename,
                  CEGAR=False,
                  RL=False,
                  debugging=True,
-                 projection=False
+                 projection=False,
+                 cadet_path=None
                  ):
     assert isinstance(filename, str)
 
-    cmd = ['./../../cadet/dev/cadet','-v','1',
-            '--sat_by_qbf']
+    if cadet_path is None:
+        cadet_path = './../../cadet/dev/cadet'
+
+    cmd = [cadet_path, '-v', '1', '--sat_by_qbf']
     if debugging:
         cmd += ['--debugging']
     if decision_limit != None:
