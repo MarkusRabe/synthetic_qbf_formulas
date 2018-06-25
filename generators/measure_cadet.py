@@ -103,7 +103,6 @@ class StatisticsAccumulator(object):
         self.num_decision_list = []
         self.num_files = 0
 
-
     def measure_formula(self, file_name):
         self.num_files += 1
         timeouts = 0
@@ -128,11 +127,7 @@ class StatisticsAccumulator(object):
             else:
                 decisions_list.append(decisions)
 
-            if timeouts >= self.repetitions / 2:
-                return  # don't add a new value to self.num_decision_list
-
-        avg = np.mean(decisions_list)
-        self.num_decision_list.append(avg)
+        self.num_decision_list.append(((self.repetitions - timeouts) / self.repetitions, decisions_list))
 
     def write_cactus_data(self, directory):
         file_name = os.path.join(directory, f'{self.name}.dat')
@@ -140,18 +135,20 @@ class StatisticsAccumulator(object):
         data_name_y = 'decisions'
         with open(file_name, "w") as textfile:
             textfile.write(f'{data_name_x}\t{data_name_y}\n')
-            data = self.num_decision_list.copy()
+            data = [x[1][0] for x in self.num_decision_list if len(x) > 0]  # decision numbers of first run
             data.sort()
             for idx, x in enumerate(data):
                 textfile.write(f'{idx + 1}\t{x}\n')
 
     def stats(self):
-        res = f'{self.name}:\n'
-        res += f'Avg decisions: {np.mean(self.num_decision_list)}\n'
-        res += f'Var decisions: {np.var(self.num_decision_list)}\n'
-        res += f'Solved {len(self.num_decision_list)} of {self.num_files} in the decision limit {self.decision_limit}.\n'
-        res += f'Maximum: {max(self.num_decision_list) if len(self.num_decision_list) > 0 else None}\n'
-        res += f'Exponential histogram: {_histogram(self.num_decision_list)}\n'
+        res = f'Stats on decision numbers of the first run of {self.name}:\n'
+        data = [x[1][0] for x in self.num_decision_list if len(x) > 0]  # decision numbers of first run
+        res += f'    Avg decisions: {np.mean(data)}\n'
+        res += f'    Var decisions: {np.var(data)}\n'
+
+        solved = sum([x[0] for x in self.num_decision_list])  # solvability
+        res += f'Solved {solved} of {self.num_files} in the decision limit {self.decision_limit}.\n'
+        res += f'Exponential histogram: {_histogram(data)}\n'
         return res
 
 
