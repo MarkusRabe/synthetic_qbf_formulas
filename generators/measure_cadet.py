@@ -78,7 +78,7 @@ class StatisticsAccumulator(object):
                  decision_limit=None,
                  soft_decision_limit=False,
                  VSIDS=False,
-                 fresh_seed=False,
+                 fresh_seed=True,
                  CEGAR=False,
                  RL=False,
                  debugging=False,
@@ -130,19 +130,20 @@ class StatisticsAccumulator(object):
         self.num_decision_list.append(((self.repetitions - timeouts) / self.repetitions, decisions_list))
 
     def write_cactus_data(self, directory):
+
         file_name = os.path.join(directory, f'{self.name}.dat')
         data_name_x = 'number_of_formulas'
         data_name_y = 'decisions'
         with open(file_name, "w") as textfile:
             textfile.write(f'{data_name_x}\t{data_name_y}\n')
-            data = [x[1][0] for x in self.num_decision_list if len(x) > 0]  # decision numbers of first run
+            data = [x[1][0] for x in self.num_decision_list if len(x[1]) > 0]  # decision numbers of first run
             data.sort()
             for idx, x in enumerate(data):
                 textfile.write(f'{idx + 1}\t{x}\n')
 
     def stats(self):
         res = f'Stats on decision numbers of the first run of {self.name}:\n'
-        data = [x[1][0] for x in self.num_decision_list if len(x) > 0]  # decision numbers of first run
+        data = [ x[1][0] for x in self.num_decision_list if len(x[1]) > 0]  # decision numbers of first run
         res += f'    Avg decisions: {np.mean(data)}\n'
         res += f'    Var decisions: {np.var(data)}\n'
 

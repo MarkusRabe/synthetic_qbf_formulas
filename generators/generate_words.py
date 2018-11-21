@@ -8,48 +8,47 @@ import tempfile
 import git
 
 from random import randint, seed
-from aiger import bv, bv_utils
+from aigerbv.aigbv import AIGBV
+from aigerbv.expr import SignedBVExpr, atom
 from cadet_cmdline_utils import eval_formula
+import aiger_analysis as aa
 
 word_length = 8
 
-arith_ops = [bv.BV.__add__, bv.BV.__sub__]
-bitwise_ops = [bv.BV.__and__, bv.BV.__or__, bv.BV.__xor__]
-shift_ops = [bv.BV.__rshift__, bv.BV.__lshift__]
-unary_ops = [bv.BV.reverse, bv.BV.__invert__, bv.BV.__abs__, bv.BV.__neg__]
-cmp_ops = [bv.BV.__eq__, bv.BV.__ne__,
-           bv.BV.__lt__, bv.BV.__le__, bv.BV.__gt__, bv.BV.__ge__]
+arith_ops = [SignedBVExpr.__add__, SignedBVExpr.__sub__]
+bitwise_ops = [SignedBVExpr.__and__, SignedBVExpr.__or__, SignedBVExpr.__xor__]
+unary_ops = [SignedBVExpr.__invert__, SignedBVExpr.__abs__, SignedBVExpr.__neg__]
+cmp_ops = [SignedBVExpr.__eq__, SignedBVExpr.__ne__,
+           SignedBVExpr.__lt__, SignedBVExpr.__le__, SignedBVExpr.__gt__, SignedBVExpr.__ge__]
 
 variables = None
+
 
 def variable():
     # variables[randint(0, len(variables) - 1)]
     global variables
-    v = bv.BV(word_length, variables.pop())
-    return v
+    return atom(word_length, variables.pop(), signed=True)
+
 
 def constant_expr():
     if randint(0, 4) == 0:
-        c = bv.BV(word_length, randint(- 2**word_length + 1, 2**word_length -1))
+        c = atom(word_length, randint(- 2**(word_length-1), 2**(word_length-1) - 1), signed=True)
     else: 
-        c = bv.BV(word_length, 1)
+        c = atom(word_length, 1, signed=True)
     return c
+
 
 def leaf_expr(size):  # constant or variable
     assert size == 1
     return variable() if randint(0, 1) == 0 else constant_expr()
 
-def shift_expr(size):
-    assert size > 1
-    arg = random_expr(size - 1)
-    shift_by = randint(1, word_length - 1)
-    return shift_ops[randint(0, len(shift_ops) - 1)](arg, shift_by)
 
 def unary_expr(size):
     assert size > 1
     arg = random_expr(size - 1)
     op = unary_ops[randint(0, len(unary_ops) - 1)]
     return op(arg)
+
 
 def arithmetic_expr(size):
     assert size > 2
@@ -60,18 +59,17 @@ def arithmetic_expr(size):
     right = random_expr(size - split - 1)
     return operator(left, right)
 
+
 def random_expr(size):
     if size <= 1:
         return leaf_expr(size)
     if size == 2:
-        if randint(0, 2) == 0:
-            return shift_expr(size)
-        else:
-            return unary_expr(size)
+        return unary_expr(size)
     if randint(0, 2) == 0:
         return bitwise_expr(size)
     else:
         return arithmetic_expr(size)
+
 
 def bitwise_expr(size):
     assert size > 2
@@ -96,7 +94,7 @@ def random_bool_expr(size):
 def random_circuit(size):
     while True:
         e = random_bool_expr(size)
-        e = bv_utils.simplify(e)
+        e = aa.simplify(e)
         if e is not None:
             return e
         else: 
@@ -195,8 +193,7 @@ def main():
         # if len(e.aig.gates) > args.maxvars:
         #     print('    Too many variables')
         #     continue
-
-        if '1 x1' not in e.variables and '1 x2' not in e.variables:
+        if not any([v.startswith('1 x1') or v.startswith('1 x2') for v in e.inputs]):
             print('    No universals')
             continue
 
