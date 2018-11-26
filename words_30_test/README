@@ -1,0 +1,3 @@
+['./generators/generate_words.py', '-c', '../cadet', '--min_hardness', '10', '-n', '1000', '-p', 'words_', '-d', './words_30_test', '-e', '50']
+Namespace(cadet_path='../cadet', directory='./words_30_test', expr_size=50, file_prefix='words_', max_hardness=None, min_hardness=10, num_generated=1000, only_unsat=False, repetitions=1, seed=None, word_size=8)
+Git hash: 63df8b0e3d2dddd8cd53e012c412aa80decb1a96
